@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  
+  # Aquí le decimos que no busque en tu PC, sino en el contenedor de Docker llamado "db"
+  host: db 
+  username: postgres
+  password: password
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: aura_pulse_development
+
+test:
+  <<: *default
+  database: aura_pulse_test
+
+production:
+  <<: *default
+  database: aura_pulse_production
+  password: <%= ENV["DATABASE_PASSWORD"] %>

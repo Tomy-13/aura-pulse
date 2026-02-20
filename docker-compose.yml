@@ -1,0 +1,63 @@
+services:
+  # 1. BASE DE DATOS
+  db:
+    image: postgres:15-alpine
+    container_name: aura_pulse_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+
+
+
+  # 2. REDIS (Para tareas en 2do plano y WebSockets)
+  redis:
+    image: redis:7-alpine
+    container_name: aura_pulse_redis
+    ports:
+      - "6379:6379"
+
+
+
+  # 3. BACKEND (Ruby on Rails API)
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aura_pulse_api
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      # AGREGA ESTAS DOS LÍNEAS AQUÍ:
+      RAILS_ENV: development
+      RACK_ENV: development
+      DATABASE_URL: postgresql://postgres:password@db:5432/aura_pulse_development
+      REDIS_URL: redis://redis:6379/1
+
+
+
+  # 4. FRONTEND (Vue 3 + Vite)
+  frontend:
+    image: node:20-alpine
+    container_name: aura_pulse_vue
+    working_dir: /app
+
+
+    # Si aún no hemos creado Vue, este comando solo mantiene el contenedor vivo temporalmente
+    command: sh -c "if [ ! -f package.json ]; then sleep infinity; else npm run dev -- --host; fi"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173" # Puerto por defecto de Vite
+
+volumes:
+  postgres_data:

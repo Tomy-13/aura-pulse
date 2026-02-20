@@ -136,7 +136,7 @@ const formatTime = (dateString) => {
 }
 .mag-selector select { width: 60%; }
 
-.divider { height: 1px; background: linear-gradient(to right, rgba(168, 85, 247, 0.5), transparent); margin: 15px 0; }
+.divider { height: 1px; background: linear-gradient(to right, rgba(174, 101, 243, 0.5), transparent); margin: 15px 0; }
 
 .earthquake-list { display: flex; flex-direction: column; gap: 12px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
 .earthquake-list::-webkit-scrollbar { width: 4px; }
@@ -146,11 +146,11 @@ const formatTime = (dateString) => {
 .earthquake-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.02); transition: all 0.2s ease; cursor: pointer; }
 .earthquake-item:hover { background: rgba(168, 85, 247, 0.1); transform: translateX(4px); border-left: 2px solid var(--tech-accent-pink); }
 
-.quake-mag { color: #FF0000; font-weight: 900; font-size: 1.1rem; min-width: 45px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+.quake-mag { color: hwb(17 0% 0%); font-weight: 900; font-size: 1.1rem; min-width: 45px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
 .quake-details { display: flex; flex-direction: column; gap: 4px; }
 .quake-place { font-size: 0.8rem; color: #E5E7EB; line-height: 1.2; }
 .quake-time { font-size: 0.7rem; color: #9CA3AF; }
 
-.sync-message, .empty-state { font-size: 0.8rem; color: #A855F7; font-style: italic; text-align: center; margin-top: 10px; }
+.sync-message, .empty-state { font-size: 0.8rem; color: hsl(271, 100%, 64%); font-style: italic; text-align: center; margin-top: 10px; }
 @keyframes blink { from { opacity: 1; } to { opacity: 0.3; } }
 </style>

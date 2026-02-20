@@ -11,16 +11,12 @@ services:
     ports:
       - "5432:5432"
 
-
-
   # 2. REDIS (Para tareas en 2do plano y WebSockets)
   redis:
     image: redis:7-alpine
     container_name: aura_pulse_redis
     ports:
       - "6379:6379"
-
-
 
   # 3. BACKEND (Ruby on Rails API)
   api:
@@ -37,27 +33,38 @@ services:
       - db
       - redis
     environment:
-      # AGREGA ESTAS DOS LÍNEAS AQUÍ:
       RAILS_ENV: development
       RACK_ENV: development
       DATABASE_URL: postgresql://postgres:password@db:5432/aura_pulse_development
       REDIS_URL: redis://redis:6379/1
 
+# 4. TRABAJADOR EN SEGUNDO PLANO (El Reloj Automático de 3 min)
+  worker:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aura_pulse_worker
+    command: bash -c "bin/jobs"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - api
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:password@db:5432/aura_pulse_development
+      RAILS_LOG_TO_STDOUT: "true" # <--- LA LLAVE MÁGICA
 
-
-  # 4. FRONTEND (Vue 3 + Vite)
+  # 5. FRONTEND (Vue 3 + Vite)
   frontend:
     image: node:20-alpine
     container_name: aura_pulse_vue
     working_dir: /app
-
-
-    # Si aún no hemos creado Vue, este comando solo mantiene el contenedor vivo temporalmente
     command: sh -c "if [ ! -f package.json ]; then sleep infinity; else npm run dev -- --host; fi"
     volumes:
       - ./frontend:/app
     ports:
-      - "5173:5173" # Puerto por defecto de Vite
+      - "5173:5173"
 
 volumes:
   postgres_data:

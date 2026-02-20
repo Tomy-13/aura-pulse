@@ -2,7 +2,7 @@
 /**
  * AURA PULSE - Orquestador Principal
  * Versión: Integración Total (Título, Filtros, Globo y Footer)
- * Optimización: shallowRef para gestión masiva de datos sísmicos + Auto-Polling.
+ * Optimización: shallowRef para gestión masiva de datos sísmicos + Sincronización Automática.
  */
 import { onMounted, onBeforeUnmount, ref, computed, shallowRef } from 'vue';
 import axios from 'axios';
@@ -18,7 +18,7 @@ import AuraFooter from './components/AuraFooter.vue';
 // Usamos shallowRef para evitar que Vue analice cada propiedad interna de los sismos
 const earthquakeData = shallowRef([]); 
 const isLoading = ref(true);
-let pollingTimer = null; // Variable para almacenar nuestro reloj interno
+let syncTimer = null; // Variable para almacenar nuestro reloj de sincronización
 
 // Filtros reactivos sincronizados con el ControlPanel
 const searchQuery = ref('');
@@ -50,6 +50,7 @@ const fetchEarthquakes = async (isBackgroundSync = false) => {
     // Solo mostramos el "Cargando..." si es la primera vez que entra el usuario
     if (!isBackgroundSync) isLoading.value = true;
     
+    // Le preguntamos a NUESTRO backend (Rails), no a la USGS directo
     const response = await axios.get('http://localhost:3001/api/v1/earthquakes');
     earthquakeData.value = response.data;
     
@@ -68,15 +69,15 @@ onMounted(() => {
   // 1. Ejecutar la carga inicial con interfaz de carga
   fetchEarthquakes();
 
-  // 2. Encender el Motor de Polling (Sincronización cada 5 minutos = 300,000 ms)
-  pollingTimer = setInterval(() => {
+  // 2. Encender el Reloj de Sincronización (cada 3 minutos = 180,000 ms)
+  syncTimer = setInterval(() => {
     fetchEarthquakes(true); // true = Sincronización silenciosa en segundo plano
-  }, 300000);
+  }, 180000);
 });
 
 onBeforeUnmount(() => {
   // 3. Apagar el motor si el componente se destruye para liberar memoria
-  if (pollingTimer) clearInterval(pollingTimer);
+  if (syncTimer) clearInterval(syncTimer);
 });
 </script>
 

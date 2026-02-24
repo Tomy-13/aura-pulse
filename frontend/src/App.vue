@@ -25,7 +25,7 @@ const searchQuery = ref('');
 const minMagnitude = ref(4.5);
 
 /**
- * Motor de filtrado inteligente
+ * Motor de filtrado inteligente.
  * Procesa la data de USGS en tiempo real según la búsqueda del usuario.
  */
 const filteredEarthquakes = computed(() => {

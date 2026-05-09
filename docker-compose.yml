@@ -38,7 +38,7 @@ services:
       DATABASE_URL: postgresql://postgres:password@db:5432/aura_pulse_development
       REDIS_URL: redis://redis:6379/1
 
-# 4. TRABAJADOR EN SEGUNDO PLANO (El Reloj Automático de 3 min)
+  # 4. TRABAJADOR EN SEGUNDO PLANO
   worker:
     build: 
       context: ./backend
@@ -53,7 +53,7 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:password@db:5432/aura_pulse_development
-      RAILS_LOG_TO_STDOUT: "true" # <--- LA LLAVE MÁGICA
+      RAILS_LOG_TO_STDOUT: "true"
 
   # 5. FRONTEND (Vue 3 + Vite)
   frontend:
@@ -65,6 +65,18 @@ services:
       - ./frontend:/app
     ports:
       - "5173:5173"
+
+# 6. IA (Flowise)
+  flowise:
+    image: flowiseai/flowise
+    restart: always
+    environment:
+      - PORT=3000
+      - HTTP_SECURITY_CHECK=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - ~/.flowise:/root/.flowise
 
 volumes:
   postgres_data:

@@ -9,13 +9,22 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
-    
+
     <script type="module">
-    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
-    Chatbot.init({
-        chatflowid: "67c9e75e-f3e7-48fa-ad56-1b6f21f3b431",
-        apiHost: "http://127.0.0.1:3000",
-    })
-</script>
+      import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js").then((module) => {
+        const Chatbot = module.default;
+        Chatbot.init({
+          chatflowid: "67c9e75e-f3e7-48fa-ad56-1b6f21f3b431",
+          apiHost: "http://localhost:3000",
+          chatbotConfig: {
+            apiConfig: {
+              headers: {
+                "Authorization": "Bearer rxaqGeyKdAw-1J0C1KunwkeFXDdpJAu9TJSCfH2GM7Q"
+              }
+            }
+          }
+        });
+      });
+    </script>
   </body>
 </html>

@@ -11,7 +11,7 @@ let stars = [];
 let animationId = null;
 
 const createStars = (w, h) => {
-  // Ajustamos a 3000 estrellas. Al verse ultra nítidas, no necesitas 6000.
+  // Ajustamos a 3000 estrellas. Al verse ultra nítidas,
   // Esto libera un 50% de carga de CPU para que el globo 3D gire aún mejor.
   stars = Array.from({ length: 3000 }, () => ({
     x: Math.random() * w,
